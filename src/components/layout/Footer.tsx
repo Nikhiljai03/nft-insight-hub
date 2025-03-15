@@ -37,6 +37,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/get-started" className="text-sm hover:text-primary transition-colors">
+                  Get Started
+                </Link>
+              </li>
+              <li>
                 <a href="#methodology" className="text-sm hover:text-primary transition-colors">
                   Methodology
                 </a>
@@ -44,11 +49,6 @@ const Footer = () => {
               <li>
                 <a href="#results" className="text-sm hover:text-primary transition-colors">
                   Results
-                </a>
-              </li>
-              <li>
-                <a href="#challenges" className="text-sm hover:text-primary transition-colors">
-                  Challenges
                 </a>
               </li>
             </ul>

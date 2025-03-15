@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, TrendingUp } from 'lucide-react';
@@ -12,6 +13,7 @@ const NFTSearch: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [collections, setCollections] = useState<NFTCollection[]>([]);
   const debouncedQuery = useDebounce(query, 500);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const searchCollections = async () => {
@@ -33,6 +35,10 @@ const NFTSearch: React.FC = () => {
     
     searchCollections();
   }, [debouncedQuery]);
+  
+  const handleViewCollection = (slug: string) => {
+    navigate(`/collections/${slug}`);
+  };
   
   return (
     <div className="mb-12">
@@ -86,7 +92,12 @@ const NFTSearch: React.FC = () => {
                 <span>Items: {collection.stats.totalSupply.toLocaleString()}</span>
               </div>
               
-              <Button className="w-full mt-4">View Collection Details</Button>
+              <Button 
+                className="w-full mt-4" 
+                onClick={() => handleViewCollection(collection.slug)}
+              >
+                View Collection Details
+              </Button>
             </GlassCard>
           ))}
         </div>

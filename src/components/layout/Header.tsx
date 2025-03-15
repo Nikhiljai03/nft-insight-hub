@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +24,11 @@ const Header = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const handleGetStarted = () => {
+    navigate('/get-started');
+    setIsMenuOpen(false);
+  };
 
   return (
     <header
@@ -58,7 +64,7 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:block">
-            <Button size="sm" className="rounded-full px-6">
+            <Button size="sm" className="rounded-full px-6" onClick={handleGetStarted}>
               Get Started
             </Button>
           </div>
@@ -116,7 +122,7 @@ const Header = () => {
           >
             Challenges
           </a>
-          <Button className="mt-2 w-full rounded-full">Get Started</Button>
+          <Button className="mt-2 w-full rounded-full" onClick={handleGetStarted}>Get Started</Button>
         </div>
       </nav>
     </header>
