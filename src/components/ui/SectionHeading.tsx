@@ -8,6 +8,7 @@ interface SectionHeadingProps {
   subtitle?: string;
   centered?: boolean;
   className?: string;
+  gradient?: boolean;
 }
 
 const SectionHeading: React.FC<SectionHeadingProps> = ({
@@ -16,6 +17,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
   subtitle,
   centered = true,
   className,
+  gradient = false,
 }) => {
   return (
     <div className={cn(
@@ -24,11 +26,16 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       className
     )}>
       {eyebrow && (
-        <div className="inline-block px-3 py-1 mb-4 text-xs font-medium tracking-wider uppercase rounded-full bg-primary/10 text-primary">
+        <div className="inline-block px-3 py-1 mb-4 text-xs font-medium tracking-wider uppercase rounded-full bg-primary/20 text-primary">
           {eyebrow}
         </div>
       )}
-      <h2 className="section-title">{title}</h2>
+      <h2 className={cn(
+        "section-title",
+        gradient && "text-gradient"
+      )}>
+        {title}
+      </h2>
       {subtitle && <p className="section-subtitle">{subtitle}</p>}
     </div>
   );

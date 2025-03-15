@@ -7,6 +7,7 @@ interface GlassCardProps {
   className?: string;
   interactive?: boolean;
   delay?: number;
+  glowEffect?: boolean;
 }
 
 const GlassCard: React.FC<GlassCardProps> = ({
@@ -14,6 +15,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
   className,
   interactive = false,
   delay = 0,
+  glowEffect = false,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +44,14 @@ const GlassCard: React.FC<GlassCardProps> = ({
     const rotateY = (centerX - x) / 20;
     
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    
+    // Add dynamic shadow effect based on mouse position
+    const shadowX = (x - centerX) / 25;
+    const shadowY = (y - centerY) / 25;
+    card.style.boxShadow = `
+      ${shadowX}px ${shadowY}px 20px rgba(139, 92, 246, 0.2),
+      0 10px 20px rgba(0, 0, 0, 0.3)
+    `;
   };
   
   const handleMouseLeave = () => {
@@ -49,6 +59,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
     
     const card = cardRef.current;
     card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    card.style.boxShadow = '';
   };
 
   return (
@@ -58,6 +69,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
         'glassmorphism rounded-2xl p-6 md:p-8 transition-all duration-300 ease-out',
         delay > 0 && 'opacity-0',
         interactive && 'hover:shadow-xl cursor-pointer',
+        glowEffect && 'animate-pulse-glow',
         className
       )}
       onMouseMove={handleMouseMove}
