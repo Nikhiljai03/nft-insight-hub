@@ -1,0 +1,4 @@
+
+// This would be an image file, but since we can't directly upload binary content,
+// we need to reference an external URL. In a real implementation, you would upload 
+// an actual image file to the public directory.

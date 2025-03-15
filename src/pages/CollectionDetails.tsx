@@ -16,6 +16,7 @@ const CollectionDetails = () => {
   const { slug } = useParams();
   const [collection, setCollection] = useState(null);
   const [priceHistory, setPriceHistory] = useState([]);
+  const [collectionItems, setCollectionItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   
@@ -30,6 +31,9 @@ const CollectionDetails = () => {
         
         const historyData = await nftApiService.getCollectionPriceHistory(slug);
         setPriceHistory(historyData);
+        
+        const itemsData = await nftApiService.getCollectionItems(slug);
+        setCollectionItems(itemsData);
       } catch (error) {
         console.error("Error fetching collection details:", error);
         toast({
@@ -89,8 +93,8 @@ const CollectionDetails = () => {
               <div className="w-full md:w-1/3">
                 <div className="aspect-square rounded-xl overflow-hidden shadow-lg">
                   <img 
-                    src={collection.imageUrl || "https://via.placeholder.com/500"} 
-                    alt={collection.name}
+                    src={collection?.imageUrl || "https://via.placeholder.com/500"} 
+                    alt={collection?.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -98,7 +102,7 @@ const CollectionDetails = () => {
               
               <div className="w-full md:w-2/3">
                 <div className="flex items-center gap-4 mb-2">
-                  <h1 className="text-3xl md:text-4xl font-bold">{collection.name}</h1>
+                  <h1 className="text-3xl md:text-4xl font-bold">{collection?.name}</h1>
                   <Button variant="ghost" size="icon">
                     <Star className="h-5 w-5" />
                   </Button>
@@ -107,14 +111,14 @@ const CollectionDetails = () => {
                   </Button>
                 </div>
                 
-                <p className="text-muted-foreground mb-6">{collection.description}</p>
+                <p className="text-muted-foreground mb-6">{collection?.description}</p>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   <GlassCard className="p-4">
                     <div className="flex flex-col items-center">
                       <DollarSign className="h-5 w-5 text-primary mb-2" />
                       <span className="text-sm text-muted-foreground">Floor Price</span>
-                      <span className="text-lg font-bold">{collection.stats.floorPrice} ETH</span>
+                      <span className="text-lg font-bold">{collection?.stats.floorPrice} ETH</span>
                     </div>
                   </GlassCard>
                   
@@ -122,7 +126,7 @@ const CollectionDetails = () => {
                     <div className="flex flex-col items-center">
                       <Activity className="h-5 w-5 text-primary mb-2" />
                       <span className="text-sm text-muted-foreground">Volume</span>
-                      <span className="text-lg font-bold">{(collection.stats.totalVolume / 1000).toFixed(1)}K ETH</span>
+                      <span className="text-lg font-bold">{collection?.stats.totalVolume ? (collection.stats.totalVolume / 1000).toFixed(1) + 'K' : '0'} ETH</span>
                     </div>
                   </GlassCard>
                   
@@ -130,7 +134,7 @@ const CollectionDetails = () => {
                     <div className="flex flex-col items-center">
                       <Users className="h-5 w-5 text-primary mb-2" />
                       <span className="text-sm text-muted-foreground">Owners</span>
-                      <span className="text-lg font-bold">{collection.stats.numOwners.toLocaleString()}</span>
+                      <span className="text-lg font-bold">{collection?.stats.numOwners?.toLocaleString()}</span>
                     </div>
                   </GlassCard>
                   
@@ -138,7 +142,7 @@ const CollectionDetails = () => {
                     <div className="flex flex-col items-center">
                       <Clock className="h-5 w-5 text-primary mb-2" />
                       <span className="text-sm text-muted-foreground">Items</span>
-                      <span className="text-lg font-bold">{collection.stats.totalSupply.toLocaleString()}</span>
+                      <span className="text-lg font-bold">{collection?.stats.totalSupply?.toLocaleString()}</span>
                     </div>
                   </GlassCard>
                 </div>
@@ -242,20 +246,24 @@ const CollectionDetails = () => {
             />
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-                <GlassCard key={item} className="overflow-hidden">
+              {collectionItems.map((item) => (
+                <GlassCard key={item.id} className="overflow-hidden">
                   <div className="aspect-square w-full overflow-hidden mb-4">
                     <img 
-                      src={`https://via.placeholder.com/400?text=NFT ${item}`}
-                      alt={`NFT ${item}`}
+                      src={item.imageUrl}
+                      alt={`${collection?.name} #${item.id}`}
                       className="w-full h-full object-cover transition-transform hover:scale-105"
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-bold mb-1">{collection.name} #{item}</h3>
+                    <h3 className="font-bold mb-1">{collection?.name} #{item.id}</h3>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Price</span>
-                      <span className="font-medium">{(collection.stats.floorPrice * (0.9 + Math.random() * 0.2)).toFixed(3)} ETH</span>
+                      <span className="font-medium">{item.price} ETH</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-sm text-muted-foreground">Rarity</span>
+                      <span className="font-medium">{item.rarity}</span>
                     </div>
                     <Button className="w-full mt-4" size="sm" onClick={() => {
                       toast({

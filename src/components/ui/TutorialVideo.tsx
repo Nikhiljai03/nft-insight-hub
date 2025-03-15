@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, Book, GraduationCap, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import GlassCard from './GlassCard';
 
@@ -57,29 +57,31 @@ const TutorialVideo = () => {
         <video
           ref={videoRef}
           className="w-full aspect-video"
-          poster="https://via.placeholder.com/1280x720?text=NFT+Insight+Hub+Tutorial"
+          poster="/tutorial-poster.jpg"
           onTimeUpdate={handleTimeUpdate}
           onEnded={() => setIsPlaying(false)}
         >
-          {/* For demo purposes, we're using a placeholder. In a real app, you would include a real video file */}
-          <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4" />
+          <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
         {!isPlaying && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="rounded-full bg-white/20 backdrop-blur hover:bg-white/30"
-              onClick={handlePlayPause}
-            >
-              <Play className="h-8 w-8 text-white" />
-            </Button>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+            <div className="text-center">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="rounded-full bg-white/20 backdrop-blur hover:bg-white/30 mb-4"
+                onClick={handlePlayPause}
+              >
+                <Play className="h-8 w-8 text-white" />
+              </Button>
+              <div className="text-white text-xl font-bold drop-shadow-md">Watch AI-Powered NFT Tutorial</div>
+            </div>
           </div>
         )}
         
-        <div className="absolute bottom-0 left-0 right-0 bg-black/30 backdrop-blur-sm p-2">
+        <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-2">
           <div 
             className="w-full h-1 bg-gray-600 rounded-full mb-2 cursor-pointer"
             onClick={handleProgressClick}
@@ -110,9 +112,25 @@ const TutorialVideo = () => {
       <div className="p-6">
         <h3 className="text-xl font-bold mb-2">How to Use NFT Insight Hub</h3>
         <p className="text-muted-foreground mb-4">
-          This tutorial walks you through the main features of our platform, showing you how to 
+          This AI-generated tutorial walks you through the main features of our platform, showing you how to 
           search for collections, analyze market data, and use our tools to make informed decisions.
         </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-md">
+            <GraduationCap className="h-5 w-5 text-primary" />
+            <span>Interactive Learning</span>
+          </div>
+          <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-md">
+            <Book className="h-5 w-5 text-primary" />
+            <span>Step-by-Step Guide</span>
+          </div>
+          <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-md">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <span>AI-Enhanced</span>
+          </div>
+        </div>
+        
         <div className="flex gap-4">
           <Button variant="outline" className="flex-1" onClick={handlePlayPause}>
             {isPlaying ? 'Pause Tutorial' : 'Play Tutorial'}
