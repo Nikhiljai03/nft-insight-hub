@@ -18,7 +18,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import GlassCard from './GlassCard';
 import { nftApiService, NFTMarketData } from '@/services/nftApiService';
-import { ReloadIcon } from '@radix-ui/react-icons';
+import { RefreshCw } from 'lucide-react';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -78,9 +78,9 @@ const ChartSection: React.FC = () => {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ReloadIcon className="h-4 w-4 animate-spin" />
+              <RefreshCw className="h-4 w-4 animate-spin" />
             ) : (
-              <ReloadIcon className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4" />
             )}
             Refresh
           </button>
@@ -96,7 +96,7 @@ const ChartSection: React.FC = () => {
           <TabsContent value="volume" className="mt-0">
             {isLoading && marketData.length === 0 ? (
               <div className="h-80 w-full flex justify-center items-center">
-                <ReloadIcon className="h-8 w-8 animate-spin text-primary" />
+                <RefreshCw className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : (
               <div className="h-80 w-full">
@@ -134,7 +134,7 @@ const ChartSection: React.FC = () => {
           <TabsContent value="categories" className="mt-0">
             {isLoading && categoryData.length === 0 ? (
               <div className="h-80 w-full flex justify-center items-center">
-                <ReloadIcon className="h-8 w-8 animate-spin text-primary" />
+                <RefreshCw className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : (
               <div className="h-80 w-full">
@@ -165,7 +165,7 @@ const ChartSection: React.FC = () => {
           <TabsContent value="comparison" className="mt-0">
             {isLoading && marketData.length === 0 ? (
               <div className="h-80 w-full flex justify-center items-center">
-                <ReloadIcon className="h-8 w-8 animate-spin text-primary" />
+                <RefreshCw className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : (
               <div className="h-80 w-full">
