@@ -130,9 +130,92 @@ const mockCollections: NFTCollection[] = [
       totalSupply: 20000
     }
   },
+  {
+    slug: 'art-blocks',
+    name: 'Art Blocks',
+    description: 'Art Blocks is a first of its kind platform focused on genuinely programmable on-demand generative content that is stored immutably on the Ethereum Blockchain.',
+    imageUrl: 'https://i.seadn.io/gae/FG0QJ00fN3c_FWuPeUr9-T__iQl63j9qqMm-dBBSGbyWKYuMicxhxHqCbqz6-tIWh7NYfT9WpRTTQgGLLz3q2PNYnDHtg5KN9wAK?auto=format&dpr=1&w=3000',
+    stats: {
+      floorPrice: 1.25,
+      totalVolume: 430800,
+      numOwners: 12500,
+      totalSupply: 180000
+    }
+  },
+  {
+    slug: 'pudgy-penguins',
+    name: 'Pudgy Penguins',
+    description: 'Pudgy Penguins is a collection of 8,888 NFTs, accelerating Web3 innovation through IP utilization and community empowerment.',
+    imageUrl: 'https://i.seadn.io/gae/yNi-XdGxsgQCPpqSio4o31ygAV6wURdIdInWRcFIl46UjUQ1eV7BEndGe8L661OoG-clRi7EgInLX4LPu9Jfw4fq0bnVYHqIDgOa?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 6.53,
+      totalVolume: 120400,
+      numOwners: 3800,
+      totalSupply: 8888
+    }
+  },
+  {
+    slug: 'cool-cats-nft',
+    name: 'Cool Cats NFT',
+    description: 'Cool Cats is a collection of 9,999 randomly generated and stylistically curated NFTs that exist on the Ethereum Blockchain.',
+    imageUrl: 'https://i.seadn.io/gae/LIov33kogXOK4XZd2ESj29sqm_Hww5JSdO7AFn5wjt8xgnJJ0UpNV9yITqxra3s_LMEW1AnnrgOVB_hDpjJRA1uF4skI5Sdi_9rULi8?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 2.87,
+      totalVolume: 95600,
+      numOwners: 4200,
+      totalSupply: 9999
+    }
+  },
+  {
+    slug: 'world-of-women-nft',
+    name: 'World of Women',
+    description: 'World of Women is a collection of 10,000 NFTs giving you access to strong, diverse and powerful women.',
+    imageUrl: 'https://i.seadn.io/gae/7rQxqp2cAN4J-pFJ6A22Ncbd4FSxJ-UyZEPJQj6JT0US1K4XNOhNBqL4LTzTlzuDpzUPF5zvSi2YjgZLFBC-FaRQEbFJQYSvZDZUQQ?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 3.19,
+      totalVolume: 110200,
+      numOwners: 5100,
+      totalSupply: 10000
+    }
+  },
+  {
+    slug: 'clonex',
+    name: 'CloneX',
+    description: 'CloneX is a collection of 20,000 next-gen Avatars, created by RTFKT and artist Takashi Murakami.',
+    imageUrl: 'https://i.seadn.io/gae/XN0XuD8Uh3jyRWNtPTFeXJg_ht8m5ofDx6aHklOiy4amhFuWUa0JaR6It49AH8tlnYS386Q0TW_-Lmedn0UET_ko1a3CbJGeu5iHMg?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 5.72,
+      totalVolume: 198500,
+      numOwners: 7800,
+      totalSupply: 20000
+    }
+  },
+  {
+    slug: 'meebits',
+    name: 'Meebits',
+    description: 'Meebits are 20,000 unique 3D voxel characters, created by a custom generative algorithm, registered on the Ethereum blockchain.',
+    imageUrl: 'https://i.seadn.io/gae/d784iHHbqQFVH1XYD6HoT4u3y_Fsu_9FZUltWjnOzoYv7qqB5dLUqpOJ_G-2Mhl1n1IGS1SzYF1QS_gg4uEjWsxHnREJgBX6q0Z64A?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 3.95,
+      totalVolume: 145900,
+      numOwners: 6300,
+      totalSupply: 20000
+    }
+  },
+  {
+    slug: 'veefriends',
+    name: 'VeeFriends',
+    description: 'VeeFriends is a collection of 10,255 NFTs created by Gary Vaynerchuk with meaningful attributes that create access and utility.',
+    imageUrl: 'https://i.seadn.io/gae/5y-UCAXiNOFXH551w5bWdZEYOCdHPwbqmcKb-xa3uVQEjQgxvih3HtZWSmzqDqd0uk7kIqFrZhw32Gt6xPBFg4t_n9BKhpou-dwnOg?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 4.29,
+      totalVolume: 87600,
+      numOwners: 4900,
+      totalSupply: 10255
+    }
+  }
 ];
 
-// Create a mapping of collection items for each collection slug
 const mockCollectionItems = {
   'bored-ape-yacht-club': [
     {
@@ -320,6 +403,50 @@ const mockCollectionItems = {
         { trait_type: 'Type', value: 'Female' },
         { trait_type: 'Accessory', value: 'Wild Hair' }
       ]
+    },
+    {
+      id: 7252,
+      name: 'CryptoPunk #7252',
+      price: 62.8,
+      rarity: 'Rare',
+      imageUrl: 'https://i.seadn.io/gcs/files/ef34304cfb08ba9d53ecac4a52ab9bc8.png?auto=format&dpr=1&w=1000',
+      traits: [
+        { trait_type: 'Type', value: 'Male' },
+        { trait_type: 'Accessory', value: 'Beanie' }
+      ]
+    },
+    {
+      id: 2338,
+      name: 'CryptoPunk #2338',
+      price: 61.2,
+      rarity: 'Uncommon',
+      imageUrl: 'https://i.seadn.io/gcs/files/0ce0b3a1f97672ea7e9bc935236e3732.png?auto=format&dpr=1&w=1000',
+      traits: [
+        { trait_type: 'Type', value: 'Male' },
+        { trait_type: 'Accessory', value: 'Earring' }
+      ]
+    },
+    {
+      id: 4156,
+      name: 'CryptoPunk #4156',
+      price: 76.9,
+      rarity: 'Epic',
+      imageUrl: 'https://i.seadn.io/gcs/files/24efd3a69ca70caa17290a4cfb021134.png?auto=format&dpr=1&w=1000',
+      traits: [
+        { trait_type: 'Type', value: 'Ape' },
+        { trait_type: 'Accessory', value: 'Bandana' }
+      ]
+    },
+    {
+      id: 5822,
+      name: 'CryptoPunk #5822',
+      price: 95.3,
+      rarity: 'Legendary',
+      imageUrl: 'https://i.seadn.io/gcs/files/6fc6f297e5edce7556d3b1edbcbfc09a.png?auto=format&dpr=1&w=1000',
+      traits: [
+        { trait_type: 'Type', value: 'Alien' },
+        { trait_type: 'Accessory', value: 'Bandana' }
+      ]
     }
   ],
   'azuki': [
@@ -411,11 +538,49 @@ const mockCollectionItems = {
         { trait_type: 'Clothing', value: 'Cyber' }
       ]
     }
-  ],
+  ]
 };
 
+const extendedCollections = [
+  {
+    slug: 'moonbirds',
+    name: 'Moonbirds',
+    description: 'A collection of 10,000 utility-enabled PFPs that feature a richly diverse and unique pool of rarity-powered traits.',
+    imageUrl: 'https://i.seadn.io/gae/H-eyNE1MwL5ohL-tCfn_Xa1Sl9M9B4612tLYeUlQubzt4ewhr4huJIR5OLuyO3Z5PpJFSwdm7rq-TikAh7f5eUw338A2cy6HRH75?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 7.12,
+      totalVolume: 168000,
+      numOwners: 6400,
+      totalSupply: 10000
+    }
+  },
+  {
+    slug: 'otherdeed',
+    name: 'Otherdeed for Otherside',
+    description: 'Otherdeed is the key to claiming land in Otherside, Yuga Labs\' upcoming metaverse.',
+    imageUrl: 'https://i.seadn.io/gae/yIm-M5-BpSDdTEIJRt5D6xphizhIdozXjqSITgK4phWq7MmAU3qE7Nw7POGCiPGyhtJ3ZFP8iJ29TFl-RLcGBWX5qI4-ZcnCPcsY4zI?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 1.65,
+      totalVolume: 345800,
+      numOwners: 34700,
+      totalSupply: 100000
+    }
+  },
+  {
+    slug: 'doodles-2',
+    name: 'Doodles 2',
+    description: 'Doodles 2 is a full-scale evolution of the Doodles experience from a collectible NFT to a digital identity platform, enabling every holder to create their own, personalized and fully on-chain characters.',
+    imageUrl: 'https://i.seadn.io/gcs/files/bc25bd2b22bf20a1e64ff06d49452991.png?auto=format&dpr=1&w=1000',
+    stats: {
+      floorPrice: 0.42,
+      totalVolume: 7690,
+      numOwners: 28000,
+      totalSupply: 23075
+    }
+  }
+];
+
 const getMockPriceHistory = (slug: string): NFTPriceHistory[] => {
-  // Generate mock price history based on the collection slug
   const collection = mockCollections.find(c => c.slug === slug);
   if (!collection) return [];
   
@@ -441,79 +606,34 @@ const getMockPriceHistory = (slug: string): NFTPriceHistory[] => {
 };
 
 export const nftApiService = {
-  // Get market trend data
   getMarketData: async (): Promise<NFTMarketData[]> => {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
     return mockMarketData;
   },
   
-  // Get category distribution data
   getCategoryData: async (): Promise<NFTCategoryData[]> => {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 600));
     return mockCategoryData;
   },
   
-  // Search for an NFT collection
   searchCollections: async (query: string): Promise<NFTCollection[]> => {
     try {
-      // In a production app, this would be:
-      // const response = await fetch(`${OPENSEA_API_BASE}/collections?query=${query}`, {
-      //   headers: { 'X-API-KEY': SAMPLE_API_KEY }
-      // });
-      // return await response.json();
-      
-      // For demo purposes, return simulated results
       if (!query) return [];
       
-      // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      // Generate fake but realistic collection data
-      const sampleCollections = [
-        {
-          slug: "bored-ape-yacht-club",
-          name: "Bored Ape Yacht Club",
-          description: "A collection of 10,000 unique Bored Ape NFTs",
-          imageUrl: "https://i.seadn.io/gae/Ju9CkWtV-1Okvf45wo8UctR-M9He2PjILP0oOvxE89AyiPPGtrR3gysu1Zgy0hjd2xKIgjJJtWIc0ybj4Vd7wv8t3pxDGHoJBzDB?w=500&auto=format",
-          stats: {
-            floorPrice: 18.2,
-            totalVolume: 841526,
-            numOwners: 5632,
-            totalSupply: 10000
-          }
-        },
-        {
-          slug: "cryptopunks",
-          name: "CryptoPunks",
-          description: "10,000 uniquely generated characters on Ethereum",
-          imageUrl: "https://i.seadn.io/gae/BdxvLseXcfl57BiuQcQYdJ64v-aI8din7WPk0Pgo3qQFhAUH-B6i-dCqqc_mCkRIzULmwzwecnohLhrcH8A9mpWIZqA7ygc52Sr81hE?w=500&auto=format",
-          stats: {
-            floorPrice: 28.3,
-            totalVolume: 756340,
-            numOwners: 3732,
-            totalSupply: 10000
-          }
-        },
-        {
-          slug: "azuki",
-          name: "Azuki",
-          description: "A brand for the metaverse. Built by the community.",
-          imageUrl: "https://i.seadn.io/gae/H8jOCJuQokNqGBpkBN5wk1oZwO7LM8bNnrHCaekV2nKjnCqw6UB5oaH8XyNeBDj6bA_n1mjejzhFQUP3O1NfjFLHr3FOaeHcTOOT?w=500&auto=format",
-          stats: {
-            floorPrice: 7.8,
-            totalVolume: 284923,
-            numOwners: 4872,
-            totalSupply: 10000
-          }
-        }
-      ];
-      
-      // Filter collections based on query
-      return sampleCollections.filter(collection => 
-        collection.name.toLowerCase().includes(query.toLowerCase())
+      const queryLower = query.toLowerCase();
+      const results = extendedCollections.filter(collection => 
+        collection.name.toLowerCase().includes(queryLower) ||
+        collection.description.toLowerCase().includes(queryLower) ||
+        collection.slug.toLowerCase().includes(queryLower.replace(/\s+/g, '-'))
       );
+      
+      if (results.length === 0 && queryLower.length > 0) {
+        return mockCollections.slice(0, 6);
+      }
+      
+      return results;
     } catch (error) {
       console.error("Failed to search NFT collections:", error);
       toast({
@@ -526,22 +646,55 @@ export const nftApiService = {
   },
   
   getCollectionBySlug: async (slug: string): Promise<NFTCollection | null> => {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    return mockCollections.find(c => c.slug === slug) || null;
+    
+    const collection = mockCollections.find(c => c.slug === slug);
+    if (collection) return collection;
+    
+    const extendedCollection = extendedCollections.find(c => c.slug === slug && 
+      !mockCollections.some(mc => mc.slug === c.slug));
+    
+    return extendedCollection || null;
   },
   
   getCollectionPriceHistory: async (slug: string): Promise<NFTPriceHistory[]> => {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
     return getMockPriceHistory(slug);
   },
   
   getCollectionItems: async (slug: string): Promise<NFTCollectionItem[]> => {
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1200));
     
-    // Return items for the requested collection or an empty array if not found
-    return mockCollectionItems[slug] || [];
+    if (mockCollectionItems[slug]) {
+      return mockCollectionItems[slug];
+    }
+    
+    const collection = await nftApiService.getCollectionBySlug(slug);
+    if (collection) {
+      const placeholderItems: NFTCollectionItem[] = [];
+      const itemCount = Math.min(12, collection.stats.totalSupply);
+      
+      for (let i = 1; i <= itemCount; i++) {
+        const id = Math.floor(Math.random() * 10000);
+        const rarity = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'][Math.floor(Math.random() * 6)];
+        const price = collection.stats.floorPrice * (0.8 + Math.random() * 0.8);
+        
+        placeholderItems.push({
+          id,
+          name: `${collection.name} #${id}`,
+          price: parseFloat(price.toFixed(2)),
+          rarity,
+          imageUrl: `https://picsum.photos/seed/${slug}-${id}/400/400`,
+          traits: [
+            { trait_type: 'Background', value: ['Blue', 'Green', 'Red', 'Purple', 'Yellow'][Math.floor(Math.random() * 5)] },
+            { trait_type: 'Rarity', value: rarity }
+          ]
+        });
+      }
+      
+      return placeholderItems;
+    }
+    
+    return [];
   }
 };
