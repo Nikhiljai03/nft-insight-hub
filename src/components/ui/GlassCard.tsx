@@ -8,6 +8,7 @@ interface GlassCardProps {
   interactive?: boolean;
   delay?: number;
   glowEffect?: boolean;
+  glowColor?: 'primary' | 'accent' | 'blue' | 'purple';
 }
 
 const GlassCard: React.FC<GlassCardProps> = ({
@@ -16,6 +17,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
   interactive = false,
   delay = 0,
   glowEffect = false,
+  glowColor = 'primary'
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -48,8 +50,15 @@ const GlassCard: React.FC<GlassCardProps> = ({
     // Add dynamic shadow effect based on mouse position
     const shadowX = (x - centerX) / 25;
     const shadowY = (y - centerY) / 25;
+    
+    // Get the appropriate glow color based on the prop
+    let shadowColor = 'rgba(139, 92, 246, 0.2)'; // Default purple
+    if (glowColor === 'blue') shadowColor = 'rgba(59, 130, 246, 0.2)';
+    if (glowColor === 'accent') shadowColor = 'rgba(56, 189, 248, 0.2)';
+    if (glowColor === 'primary') shadowColor = 'rgba(147, 51, 234, 0.2)';
+    
     card.style.boxShadow = `
-      ${shadowX}px ${shadowY}px 20px rgba(139, 92, 246, 0.2),
+      ${shadowX}px ${shadowY}px 20px ${shadowColor},
       0 10px 20px rgba(0, 0, 0, 0.3)
     `;
   };
@@ -62,6 +71,17 @@ const GlassCard: React.FC<GlassCardProps> = ({
     card.style.boxShadow = '';
   };
 
+  const getGlowClass = () => {
+    if (!glowEffect) return '';
+    
+    switch (glowColor) {
+      case 'blue': return 'animate-pulse-glow-blue';
+      case 'accent': return 'animate-pulse-glow-accent';
+      case 'purple': return 'animate-pulse-glow-purple';
+      default: return 'animate-pulse-glow';
+    }
+  };
+
   return (
     <div
       ref={cardRef}
@@ -69,7 +89,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
         'glassmorphism rounded-2xl p-6 md:p-8 transition-all duration-300 ease-out',
         delay > 0 && 'opacity-0',
         interactive && 'hover:shadow-xl cursor-pointer',
-        glowEffect && 'animate-pulse-glow',
+        getGlowClass(),
         className
       )}
       onMouseMove={handleMouseMove}

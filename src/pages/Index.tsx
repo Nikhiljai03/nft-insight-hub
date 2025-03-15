@@ -11,6 +11,7 @@ import FutureWork from '@/components/sections/FutureWork';
 import ChartSection from '@/components/ui/ChartSection';
 import GlassCard from '@/components/ui/GlassCard';
 import SectionHeading from '@/components/ui/SectionHeading';
+import NFTSearch from '@/components/ui/NFTSearch';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, BookOpen, Download } from 'lucide-react';
 
@@ -22,6 +23,20 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         <Introduction />
+        
+        {/* NFT Search Section */}
+        <section className="py-16">
+          <div className="container max-w-6xl mx-auto px-4 sm:px-6">
+            <SectionHeading 
+              eyebrow="Explore" 
+              title="Search NFT Collections" 
+              subtitle="Find and analyze real NFT collections with current market data and trends."
+              gradient
+            />
+            
+            <NFTSearch />
+          </div>
+        </section>
         
         {/* Research Papers Section */}
         <section className="py-16 bg-muted/20">

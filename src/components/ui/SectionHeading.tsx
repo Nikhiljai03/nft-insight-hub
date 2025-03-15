@@ -9,6 +9,7 @@ interface SectionHeadingProps {
   centered?: boolean;
   className?: string;
   gradient?: boolean;
+  size?: 'default' | 'large' | 'small';
 }
 
 const SectionHeading: React.FC<SectionHeadingProps> = ({
@@ -18,6 +19,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
   centered = true,
   className,
   gradient = false,
+  size = 'default'
 }) => {
   return (
     <div className={cn(
@@ -32,11 +34,22 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       )}
       <h2 className={cn(
         "section-title",
-        gradient && "text-gradient"
+        gradient && "text-gradient",
+        size === 'large' && "text-4xl md:text-5xl lg:text-6xl",
+        size === 'small' && "text-2xl md:text-3xl lg:text-4xl",
+        gradient && "animate-pulse-subtle"
       )}>
         {title}
       </h2>
-      {subtitle && <p className="section-subtitle">{subtitle}</p>}
+      {subtitle && (
+        <p className={cn(
+          "section-subtitle",
+          size === 'large' && "text-xl md:text-2xl",
+          size === 'small' && "text-base md:text-lg"
+        )}>
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 };
