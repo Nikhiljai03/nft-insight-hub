@@ -48,9 +48,16 @@ export interface PriceHistoryPoint {
   volume: number;
 }
 
+export interface NFTMarketData {
+  month: string;
+  volume: number;
+  sales: number;
+  users: number;
+}
+
 // Mock data generator helper
 const generateMockCollections = (count: number): NFTCollection[] => {
-  const blockchains = ["Ethereum", "Solana", "Polygon", "Binance", "Avalanche"];
+  const blockchains = ["Ethereum", "Solana", "Polygon", "Binance", "Avalanche", "Cardano", "Tezos", "Flow", "Wax", "Ronin"];
   const names = [
     "Bored Ape Yacht Club", "CryptoPunks", "Azuki", "Doodles", "Cool Cats", 
     "World of Women", "Art Blocks", "Clone X", "Moonbirds", "Meebits",
@@ -62,7 +69,16 @@ const generateMockCollections = (count: number): NFTCollection[] => {
     "Neo Tokyo", "Autoglyphs", "CyberBrokers", "Sappy Seals", "DeadFellaz",
     "Solana Monkey Business", "Degenerate Ape Academy", "Psychedelics Anonymous",
     "Cryptodickbutts", "Blitmap", "Veefriends", "Gutter Cat Gang", "Metaheroes",
-    "The Doge Pound", "Cool Pets", "Goblintownwtf", "Kaiju Kingz"
+    "The Doge Pound", "Cool Pets", "Goblintownwtf", "Kaiju Kingz",
+    "Metaverse HQ", "Squiggles", "Pixel Vault", "PunksComic", "Party Bears",
+    "Degen Toonz", "Lazy Lions", "Ape Gang", "3Landers", "Cerebrums",
+    "Crypto Coven", "Galaxy Eggs", "World of Women Galaxy", "mfers", 
+    "Fluf World", "Murakami Flowers", "Deadfellaz", "Bright Moments",
+    "Crypto Chicks", "Alien Frens", "Dapp Punks", "Party Degenerates",
+    "Llamaverse", "Lucky Maneki", "Robotos", "Galactic Apes", "CyberKongz",
+    "Wicked Craniums", "Bulls on the Block", "Degen Ape Academy", "Creature World",
+    "The Humanoids", "Jungle Freaks", "Metroverse", "Fantastic Fungi",
+    "Alien Frens", "CryptoMories", "Gutter Dogs", "MekaVerse", "Bored Bunny"
   ];
   
   // Generate random collections
@@ -182,17 +198,68 @@ const generatePriceHistory = (collection: NFTCollection, days: number): PriceHis
 let cachedCollections: NFTCollection[] = [];
 let cachedPriceHistories: Record<string, PriceHistoryPoint[]> = {};
 let cachedCollectionItems: Record<string, NFTItem[]> = {};
+let cachedMarketData: NFTMarketData[] = [];
+let cachedCategoryData: any[] = [];
+
+// Generate market data
+const generateMarketData = (): NFTMarketData[] => {
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  
+  return months.map((month, i) => {
+    // Create some seasonal trends
+    const seasonalFactor = Math.sin(i / 12 * Math.PI * 2) * 0.3 + 1;
+    
+    // Add growth trend
+    const growthFactor = 1 + (i / 12) * 0.8;
+    
+    // Base volume with seasonal and growth adjustments
+    const baseVolume = 10000 + Math.random() * 5000;
+    const volume = Math.floor(baseVolume * seasonalFactor * growthFactor);
+    
+    // Sales usually correlate with volume
+    const sales = Math.floor((volume / 100) * (0.8 + Math.random() * 0.4));
+    
+    // Users grow more linearly with occasional spikes
+    const baseDailyUsers = 5000 + (i * 300);
+    const userSpike = Math.random() > 0.8 ? Math.random() * 2000 : 0;
+    const users = Math.floor(baseDailyUsers + userSpike);
+    
+    return {
+      month,
+      volume,
+      sales,
+      users
+    };
+  });
+};
+
+// Generate category data
+const generateCategoryData = (): any[] => {
+  return [
+    { name: 'Art', value: 35 },
+    { name: 'Collectibles', value: 30 },
+    { name: 'Gaming', value: 20 },
+    { name: 'Metaverse', value: 15 }
+  ];
+};
 
 // Initialize with some data
 const initializeCache = () => {
   if (cachedCollections.length === 0) {
-    cachedCollections = generateMockCollections(50);
+    cachedCollections = generateMockCollections(100); // Increased from 50 to 100
     
     // Generate price histories for each collection
     cachedCollections.forEach(collection => {
       cachedPriceHistories[collection.slug] = generatePriceHistory(collection, 90);
       cachedCollectionItems[collection.slug] = generateMockNFTItems(collection, 100);
     });
+    
+    // Generate market data and category data
+    cachedMarketData = generateMarketData();
+    cachedCategoryData = generateCategoryData();
   }
 };
 
@@ -266,5 +333,21 @@ export const nftApiService = {
     return cachedCollections.filter(collection => 
       collection.blockchain.toLowerCase() === blockchain.toLowerCase()
     );
+  },
+  
+  // Get market data
+  getMarketData: async (): Promise<NFTMarketData[]> => {
+    initializeCache();
+    await new Promise(resolve => setTimeout(resolve, 700)); // Simulate network delay
+    
+    return cachedMarketData;
+  },
+  
+  // Get category data
+  getCategoryData: async (): Promise<any[]> => {
+    initializeCache();
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    
+    return cachedCategoryData;
   }
 };

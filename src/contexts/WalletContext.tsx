@@ -1,0 +1,106 @@
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import blockchainUtils, { WalletInfo } from '@/utils/blockchainUtils';
+import { useToast } from '@/hooks/use-toast';
+
+interface WalletContextType {
+  wallet: WalletInfo | null;
+  connecting: boolean;
+  connectWallet: (provider: string) => Promise<void>;
+  disconnectWallet: () => Promise<void>;
+  getFormattedAddress: () => string;
+}
+
+const WalletContext = createContext<WalletContextType | undefined>(undefined);
+
+export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [wallet, setWallet] = useState<WalletInfo | null>(null);
+  const [connecting, setConnecting] = useState(false);
+  const { toast } = useToast();
+  
+  // Check local storage for previous wallet connections on mount
+  useEffect(() => {
+    const storedWallet = localStorage.getItem('wallet');
+    if (storedWallet) {
+      try {
+        setWallet(JSON.parse(storedWallet));
+      } catch (e) {
+        localStorage.removeItem('wallet');
+      }
+    }
+  }, []);
+  
+  const connectWallet = async (provider: string) => {
+    try {
+      setConnecting(true);
+      const walletInfo = await blockchainUtils.connectWallet(provider);
+      setWallet(walletInfo);
+      
+      // Save to local storage
+      localStorage.setItem('wallet', JSON.stringify(walletInfo));
+      
+      toast({
+        title: "Wallet Connected",
+        description: `Connected to ${blockchainUtils.formatAddress(walletInfo.address)}`,
+      });
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+      toast({
+        variant: "destructive",
+        title: "Connection Failed",
+        description: "Could not connect to wallet. Please try again.",
+      });
+    } finally {
+      setConnecting(false);
+    }
+  };
+  
+  const disconnectWallet = async () => {
+    try {
+      await blockchainUtils.disconnectWallet();
+      setWallet(null);
+      
+      // Remove from local storage
+      localStorage.removeItem('wallet');
+      
+      toast({
+        title: "Wallet Disconnected",
+        description: "Your wallet has been disconnected.",
+      });
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error);
+      toast({
+        variant: "destructive",
+        title: "Disconnection Failed",
+        description: "Could not disconnect wallet. Please try again.",
+      });
+    }
+  };
+  
+  const getFormattedAddress = () => {
+    if (!wallet || !wallet.address) return '';
+    return blockchainUtils.formatAddress(wallet.address);
+  };
+  
+  return (
+    <WalletContext.Provider
+      value={{
+        wallet,
+        connecting,
+        connectWallet,
+        disconnectWallet,
+        getFormattedAddress,
+      }}
+    >
+      {children}
+    </WalletContext.Provider>
+  );
+};
+
+export const useWallet = () => {
+  const context = useContext(WalletContext);
+  if (context === undefined) {
+    throw new Error('useWallet must be used within a WalletProvider');
+  }
+  return context;
+};
