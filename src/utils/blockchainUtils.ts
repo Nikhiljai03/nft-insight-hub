@@ -69,10 +69,13 @@ const blockchainUtils = {
       }
       
       try {
+        console.log('Requesting MetaMask accounts...');
         // Request account access
         const accounts = await (window as any).ethereum.request({ 
           method: 'eth_requestAccounts' 
         });
+        
+        console.log('MetaMask accounts received:', accounts);
         
         if (accounts.length === 0) {
           throw new Error('No accounts found');
@@ -83,6 +86,8 @@ const blockchainUtils = {
           method: 'eth_chainId' 
         });
         
+        console.log('Current chain ID:', chainId);
+        
         // Get ETH balance
         const balance = await (window as any).ethereum.request({ 
           method: 'eth_getBalance',
@@ -92,13 +97,17 @@ const blockchainUtils = {
         // Convert balance from wei to ETH
         const ethBalance = (parseInt(balance, 16) / 1e18).toFixed(4);
         
-        return {
+        const walletInfo = {
           address: accounts[0],
           provider: 'metamask',
           chainId: parseInt(chainId, 16),
           balance: ethBalance,
           connected: true
         };
+        
+        console.log('Wallet info created:', walletInfo);
+        
+        return walletInfo;
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
         throw error;

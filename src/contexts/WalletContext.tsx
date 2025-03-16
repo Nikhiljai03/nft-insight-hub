@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import blockchainUtils, { WalletInfo } from '@/utils/blockchainUtils';
+import blockchainUtils, { WalletInfo, NETWORKS } from '@/utils/blockchainUtils';
 import { useToast } from '@/hooks/use-toast';
 
 interface WalletContextType {
@@ -28,20 +28,25 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         
         // Revalidate connection with provider
         if (walletInfo.provider === 'metamask' && blockchainUtils.isMetaMaskInstalled()) {
+          console.log('Attempting to revalidate MetaMask connection');
           (window as any).ethereum.request({ method: 'eth_accounts' })
             .then((accounts: string[]) => {
+              console.log('MetaMask accounts:', accounts);
               if (accounts.length === 0 || accounts[0].toLowerCase() !== walletInfo.address.toLowerCase()) {
                 // Wallet no longer connected or changed
+                console.log('Wallet no longer connected, clearing stored wallet');
                 localStorage.removeItem('wallet');
                 setWallet(null);
               }
             })
-            .catch(() => {
+            .catch((error: any) => {
+              console.error('Error revalidating MetaMask connection:', error);
               localStorage.removeItem('wallet');
               setWallet(null);
             });
         }
       } catch (e) {
+        console.error('Error parsing stored wallet:', e);
         localStorage.removeItem('wallet');
       }
     }
@@ -50,8 +55,11 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   // Set up event listeners for wallet changes
   useEffect(() => {
     if (blockchainUtils.isMetaMaskInstalled()) {
+      console.log('Setting up MetaMask event listeners');
+      
       // Listen for account changes
       blockchainUtils.listenForAccountChanges((accounts) => {
+        console.log('MetaMask account changed:', accounts);
         if (accounts.length === 0) {
           // User disconnected their wallet
           setWallet(null);
@@ -68,6 +76,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       
       // Listen for chain changes
       blockchainUtils.listenForChainChanges((chainId) => {
+        console.log('MetaMask chain changed:', chainId);
         if (wallet && wallet.provider === 'metamask') {
           // User switched networks, update the wallet info
           connectWallet('metamask').catch(console.error);
@@ -83,8 +92,10 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   
   const connectWallet = async (provider: string) => {
     try {
+      console.log(`Attempting to connect to ${provider}...`);
       setConnecting(true);
       const walletInfo = await blockchainUtils.connectWallet(provider);
+      console.log('Connection successful:', walletInfo);
       setWallet(walletInfo);
       
       // Save to local storage
@@ -94,6 +105,8 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         title: "Wallet Connected",
         description: `Connected to ${blockchainUtils.formatAddress(walletInfo.address)}`,
       });
+      
+      return walletInfo;
     } catch (error: any) {
       console.error("Error connecting wallet:", error);
       toast({
@@ -101,6 +114,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         title: "Connection Failed",
         description: error.message || "Could not connect to wallet. Please try again.",
       });
+      throw error;
     } finally {
       setConnecting(false);
     }
@@ -113,6 +127,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       
       // Remove from local storage
       localStorage.removeItem('wallet');
+      localStorage.removeItem('user-profile');
       
       toast({
         title: "Wallet Disconnected",

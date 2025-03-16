@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ProfileNav from '@/components/profile/ProfileNav';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -63,7 +64,8 @@ const Header = () => {
             </a>
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center space-x-4">
+            <ProfileNav />
             <Button size="sm" className="rounded-full px-6" onClick={handleGetStarted}>
               Get Started
             </Button>
@@ -122,6 +124,9 @@ const Header = () => {
           >
             Challenges
           </a>
+          <div className="pt-2">
+            <ProfileNav />
+          </div>
           <Button className="mt-2 w-full rounded-full" onClick={handleGetStarted}>Get Started</Button>
         </div>
       </nav>
