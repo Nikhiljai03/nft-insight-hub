@@ -10,6 +10,7 @@ import About from "./pages/About";
 import GetStarted from "./pages/GetStarted";
 import CollectionDetails from "./pages/CollectionDetails";
 import Wallet from "./pages/Wallet";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/get-started" element={<GetStarted />} />
             <Route path="/collections/:slug" element={<CollectionDetails />} />
             <Route path="/wallet" element={<Wallet />} />
+            <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

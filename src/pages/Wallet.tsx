@@ -7,12 +7,13 @@ import GlassCard from '@/components/ui/GlassCard';
 import SectionHeading from '@/components/ui/SectionHeading';
 import { 
   Wallet, ArrowRight, ShieldCheck, Clock, History, 
-  Hexagon, Shield, CreditCard, Info, AlertTriangle 
+  Hexagon, Shield, CreditCard, Info, AlertTriangle, User
 } from 'lucide-react';
 import { useWallet } from '@/contexts/WalletContext';
 import blockchainUtils, { NETWORKS } from '@/utils/blockchainUtils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
+import ProfileNav from '@/components/profile/ProfileNav';
 
 const WalletPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('connect');
@@ -179,6 +180,14 @@ const WalletPage: React.FC = () => {
               <Button
                 variant="outline"
                 className="w-full justify-start"
+                onClick={() => navigate('/profile')}
+              >
+                <User className="mr-2 h-4 w-4" />
+                View My Profile
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
                 onClick={() => navigate('/collections')}
               >
                 <History className="mr-2 h-4 w-4" />
@@ -267,14 +276,18 @@ const WalletPage: React.FC = () => {
       
       <main className="flex-grow py-16">
         <div className="container max-w-6xl mx-auto px-4">
-          <SectionHeading 
-            eyebrow="Blockchain" 
-            title="Wallet Integration" 
-            subtitle="Connect your crypto wallet to get the full experience and access all features"
-            gradient
-          />
+          <div className="flex justify-between items-center mb-8">
+            <SectionHeading 
+              eyebrow="Blockchain" 
+              title="Wallet Integration" 
+              subtitle="Connect your crypto wallet to get the full experience and access all features"
+              gradient
+            />
+            
+            <ProfileNav />
+          </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <GlassCard>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
