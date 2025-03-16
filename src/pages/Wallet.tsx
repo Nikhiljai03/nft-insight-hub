@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -11,7 +10,7 @@ import {
   Hexagon, Shield, CreditCard, Info, AlertTriangle 
 } from 'lucide-react';
 import { useWallet } from '@/contexts/WalletContext';
-import blockchainUtils from '@/utils/blockchainUtils';
+import blockchainUtils, { NETWORKS } from '@/utils/blockchainUtils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,10 +21,8 @@ const WalletPage: React.FC = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Check if MetaMask is installed
     setIsMetaMaskInstalled(blockchainUtils.isMetaMaskInstalled());
     
-    // If already connected, show the dashboard tab
     if (wallet) {
       setActiveTab('dashboard');
     }
@@ -34,10 +31,8 @@ const WalletPage: React.FC = () => {
   const handleConnect = async (provider: string) => {
     try {
       await connectWallet(provider);
-      // Will automatically switch to dashboard tab via the useEffect
     } catch (error) {
       console.error("Connection error:", error);
-      // Error is handled in the WalletContext
     }
   };
   
@@ -162,7 +157,7 @@ const WalletPage: React.FC = () => {
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Network:</span>
                 <span>
-                  {Object.values(blockchainUtils.NETWORKS).find(n => 
+                  {Object.values(NETWORKS).find(n => 
                     'chainId' in n && n.chainId === wallet.chainId
                   )?.name || `Chain ID: ${wallet.chainId}`}
                 </span>
