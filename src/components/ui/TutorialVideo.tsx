@@ -1,14 +1,16 @@
 
 import React, { useState } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, Book, GraduationCap, Sparkles } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, Book, GraduationCap, Sparkles, Award, ShoppingBag, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import GlassCard from './GlassCard';
+import { useNavigate } from 'react-router-dom';
 
 const TutorialVideo = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const videoRef = React.useRef<HTMLVideoElement>(null);
+  const navigate = useNavigate();
   
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -50,6 +52,10 @@ const TutorialVideo = () => {
       videoRef.current.currentTime = clickPosition * videoRef.current.duration;
     }
   };
+
+  const handleExploreCollections = () => {
+    navigate('/');
+  };
   
   return (
     <GlassCard className="overflow-hidden">
@@ -76,7 +82,7 @@ const TutorialVideo = () => {
               >
                 <Play className="h-8 w-8 text-white" />
               </Button>
-              <div className="text-white text-xl font-bold drop-shadow-md">Watch AI-Powered NFT Tutorial</div>
+              <div className="text-white text-xl font-bold drop-shadow-md">Watch Blockchain NFT Analytics Tutorial</div>
             </div>
           </div>
         )}
@@ -110,33 +116,33 @@ const TutorialVideo = () => {
       </div>
       
       <div className="p-6">
-        <h3 className="text-xl font-bold mb-2">How to Use NFT Insight Hub</h3>
+        <h3 className="text-xl font-bold mb-2">Understanding NFT Insight Hub: Your Blockchain Analytics Platform</h3>
         <p className="text-muted-foreground mb-4">
-          This AI-generated tutorial walks you through the main features of our platform, showing you how to 
-          search for collections, analyze market data, and use our tools to make informed decisions.
+          This tutorial explains how NFT Insight Hub helps you analyze blockchain-based NFT collections, track market trends, 
+          and make informed decisions in the digital asset space using real-time blockchain data.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-md">
-            <GraduationCap className="h-5 w-5 text-primary" />
-            <span>Interactive Learning</span>
+            <Wallet className="h-5 w-5 text-primary" />
+            <span>Blockchain Analytics</span>
           </div>
           <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-md">
-            <Book className="h-5 w-5 text-primary" />
-            <span>Step-by-Step Guide</span>
+            <ShoppingBag className="h-5 w-5 text-primary" />
+            <span>NFT Collection Data</span>
           </div>
           <div className="flex items-center gap-2 p-3 bg-secondary/20 rounded-md">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <span>AI-Enhanced</span>
+            <Award className="h-5 w-5 text-primary" />
+            <span>Market Insights</span>
           </div>
         </div>
         
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Button variant="outline" className="flex-1" onClick={handlePlayPause}>
             {isPlaying ? 'Pause Tutorial' : 'Play Tutorial'}
           </Button>
-          <Button className="flex-1">
-            Download Tutorial PDF
+          <Button className="flex-1" onClick={handleExploreCollections}>
+            Start Exploring Collections
           </Button>
         </div>
       </div>

@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, TrendingUp, AlertCircle } from 'lucide-react';
+import { Search, TrendingUp, AlertCircle, Sparkles } from 'lucide-react';
 import { nftApiService, NFTCollection } from '@/services/nftApiService';
 import GlassCard from './GlassCard';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useToast } from "@/hooks/use-toast";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Badge } from "@/components/ui/badge";
 
 const NFTSearch: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -17,20 +18,23 @@ const NFTSearch: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasError, setHasError] = useState(false);
+  const [showTrending, setShowTrending] = useState(true);
   const collectionsPerPage = 6;
   const debouncedQuery = useDebounce(query, 500);
   const navigate = useNavigate();
   const { toast } = useToast();
   
   useEffect(() => {
+    // Get trending collections if no search query
+    if (!debouncedQuery) {
+      fetchTrendingCollections();
+      return;
+    }
+    
     const searchCollections = async () => {
-      if (!debouncedQuery) {
-        setCollections([]);
-        return;
-      }
-      
       setIsSearching(true);
       setHasError(false);
+      setShowTrending(false);
       try {
         const results = await nftApiService.searchCollections(debouncedQuery);
         setCollections(results);
@@ -51,6 +55,28 @@ const NFTSearch: React.FC = () => {
     
     searchCollections();
   }, [debouncedQuery, toast]);
+  
+  const fetchTrendingCollections = async () => {
+    setIsSearching(true);
+    setHasError(false);
+    try {
+      const results = await nftApiService.getTrendingCollections();
+      setCollections(results);
+      setTotalPages(Math.ceil(results.length / collectionsPerPage));
+      setCurrentPage(1);
+      setShowTrending(true);
+    } catch (error) {
+      console.error("Error fetching trending collections:", error);
+      setHasError(true);
+      toast({
+        variant: "destructive",
+        title: "Couldn't Load Trending Collections",
+        description: "We couldn't connect to our NFT database. Please try again.",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  };
   
   const handleViewCollection = (slug: string) => {
     navigate(`/collections/${slug}`);
@@ -142,6 +168,21 @@ const NFTSearch: React.FC = () => {
     );
   };
   
+  const getBlockchainIcon = (blockchain: string) => {
+    switch (blockchain.toLowerCase()) {
+      case 'ethereum':
+        return '⟠';
+      case 'solana':
+        return '◎';
+      case 'polygon':
+        return '⬡';
+      case 'binance':
+        return 'ᗸ';
+      default:
+        return '🔗';
+    }
+  }
+  
   return (
     <div className="mb-12">
       <div className="mb-4 relative max-w-xl mx-auto">
@@ -155,12 +196,26 @@ const NFTSearch: React.FC = () => {
         />
       </div>
       
+      {showTrending && !debouncedQuery && (
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            Trending Collections
+          </h3>
+          <Button variant="ghost" size="sm" onClick={fetchTrendingCollections}>
+            Refresh
+          </Button>
+        </div>
+      )}
+      
       {isSearching && (
         <div className="text-center py-8">
           <div className="inline-block animate-pulse">
             <TrendingUp className="h-8 w-8 text-primary animate-bounce" />
           </div>
-          <p className="mt-2 text-muted-foreground">Searching collections...</p>
+          <p className="mt-2 text-muted-foreground">
+            {debouncedQuery ? 'Searching collections...' : 'Loading trending collections...'}
+          </p>
         </div>
       )}
       
@@ -168,7 +223,7 @@ const NFTSearch: React.FC = () => {
         <div className="text-center py-8">
           <AlertCircle className="h-8 w-8 text-destructive mx-auto mb-2" />
           <p className="text-muted-foreground mb-2">We're having trouble connecting to our NFT database</p>
-          <Button onClick={() => setQuery(debouncedQuery)} variant="outline" size="sm">
+          <Button onClick={() => debouncedQuery ? setQuery(debouncedQuery) : fetchTrendingCollections()} variant="outline" size="sm">
             Try Again
           </Button>
         </div>
@@ -185,7 +240,12 @@ const NFTSearch: React.FC = () => {
                   className="w-full h-full object-cover transition-transform hover:scale-105"
                 />
               </div>
-              <h3 className="text-xl font-bold mb-2">{collection.name}</h3>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-xl font-bold">{collection.name}</h3>
+                <Badge variant="outline" className="ml-auto">
+                  {getBlockchainIcon(collection.blockchain)} {collection.blockchain}
+                </Badge>
+              </div>
               <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{collection.description}</p>
               
               <div className="grid grid-cols-2 gap-4 mb-4">
