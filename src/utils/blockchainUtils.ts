@@ -1,6 +1,5 @@
 
-// This is a mock implementation of blockchain utilities
-// In a real application, this would interface with actual wallets and blockchain
+// Real implementation of blockchain utilities that interface with actual wallets
 
 // Types
 export interface WalletInfo {
@@ -53,30 +52,7 @@ export const NETWORKS = {
   }
 };
 
-// Mock wallet instance
-let walletState: WalletInfo | null = null;
-
-// Simulated transaction history
-const mockTransactions: BlockchainTransaction[] = [
-  {
-    hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    from: '0xUserAddress',
-    to: '0xNFTMarketplace',
-    value: '0.25',
-    timestamp: Date.now() - 86400000, // 1 day ago
-    status: 'confirmed'
-  },
-  {
-    hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
-    from: '0xNFTCreator',
-    to: '0xUserAddress',
-    value: '0',
-    timestamp: Date.now() - 172800000, // 2 days ago
-    status: 'confirmed'
-  }
-];
-
-// Blockchain utilities
+// Wallet interface functions
 const blockchainUtils = {
   // Check if MetaMask is installed
   isMetaMaskInstalled: (): boolean => {
@@ -84,60 +60,82 @@ const blockchainUtils = {
            typeof (window as any).ethereum !== 'undefined';
   },
   
-  // Connect to wallet (mock implementation)
+  // Connect to wallet with real providers
   connectWallet: async (provider: string): Promise<WalletInfo> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Generate random wallet address
-    const randomAddress = `0x${Array.from({length: 40}, () => 
-      Math.floor(Math.random() * 16).toString(16)).join('')}`;
-    
-    // Simulate connection
-    walletState = {
-      address: randomAddress,
-      provider,
-      chainId: NETWORKS.ETHEREUM.chainId,
-      balance: (Math.random() * 10).toFixed(4),
-      connected: true
-    };
-    
-    return walletState;
+    if (provider === 'metamask') {
+      // Connect to MetaMask
+      if (!blockchainUtils.isMetaMaskInstalled()) {
+        throw new Error('MetaMask is not installed');
+      }
+      
+      try {
+        // Request account access
+        const accounts = await (window as any).ethereum.request({ 
+          method: 'eth_requestAccounts' 
+        });
+        
+        if (accounts.length === 0) {
+          throw new Error('No accounts found');
+        }
+        
+        // Get current chain ID
+        const chainId = await (window as any).ethereum.request({ 
+          method: 'eth_chainId' 
+        });
+        
+        // Get ETH balance
+        const balance = await (window as any).ethereum.request({ 
+          method: 'eth_getBalance',
+          params: [accounts[0], 'latest']
+        });
+        
+        // Convert balance from wei to ETH
+        const ethBalance = (parseInt(balance, 16) / 1e18).toFixed(4);
+        
+        return {
+          address: accounts[0],
+          provider: 'metamask',
+          chainId: parseInt(chainId, 16),
+          balance: ethBalance,
+          connected: true
+        };
+      } catch (error) {
+        console.error('Error connecting to MetaMask:', error);
+        throw error;
+      }
+    } 
+    else if (provider === 'walletconnect') {
+      // In a real app, you would connect to WalletConnect here
+      throw new Error('WalletConnect integration not yet implemented');
+    } 
+    else if (provider === 'coinbase') {
+      // In a real app, you would connect to Coinbase Wallet here
+      throw new Error('Coinbase Wallet integration not yet implemented');
+    } 
+    else {
+      throw new Error(`Unsupported wallet provider: ${provider}`);
+    }
   },
   
   // Disconnect wallet
   disconnectWallet: async (): Promise<void> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    walletState = null;
+    // No specific disconnect method for MetaMask
+    // Just clear the local state
+    return Promise.resolve();
   },
   
-  // Get current wallet info
-  getWalletInfo: (): WalletInfo | null => {
-    return walletState;
-  },
-  
-  // Get transaction history (mock implementation)
-  getTransactionHistory: async (): Promise<BlockchainTransaction[]> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    return mockTransactions;
-  },
-  
-  // Sign message (mock implementation)
-  signMessage: async (message: string): Promise<string> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    
-    if (!walletState) {
-      throw new Error('Wallet not connected');
+  // Listen for account changes (MetaMask)
+  listenForAccountChanges: (callback: (accounts: string[]) => void) => {
+    if (blockchainUtils.isMetaMaskInstalled()) {
+      (window as any).ethereum.on('accountsChanged', callback);
     }
-    
-    // Generate random signature
-    return `0x${Array.from({length: 130}, () => 
-      Math.floor(Math.random() * 16).toString(16)).join('')}`;
+  },
+  
+  // Listen for chain changes (MetaMask)
+  listenForChainChanges: (callback: (chainId: string) => void) => {
+    if (blockchainUtils.isMetaMaskInstalled()) {
+      (window as any).ethereum.on('chainChanged', callback);
+    }
   },
   
   // Format address for display
@@ -160,14 +158,38 @@ const blockchainUtils = {
     return `${baseUrl}/${type}/${hash}`;
   },
   
-  // Convert ETH to USD (mock implementation)
-  ethToUsd: async (ethAmount: number): Promise<number> => {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+  // Get transaction history (would be implemented with a real blockchain API)
+  getTransactionHistory: async (address: string): Promise<BlockchainTransaction[]> => {
+    // In a real app, you would call a blockchain API like Etherscan or Alchemy
+    // For now, return an empty array
+    return [];
+  },
+  
+  // Sign message with wallet
+  signMessage: async (message: string): Promise<string> => {
+    if (!blockchainUtils.isMetaMaskInstalled()) {
+      throw new Error('MetaMask is not installed');
+    }
     
-    // Mock ETH price around $3000
-    const ethPrice = 3000 + (Math.random() * 200 - 100);
-    return ethAmount * ethPrice;
+    try {
+      const accounts = await (window as any).ethereum.request({ 
+        method: 'eth_requestAccounts' 
+      });
+      
+      if (accounts.length === 0) {
+        throw new Error('No accounts found');
+      }
+      
+      const signature = await (window as any).ethereum.request({
+        method: 'personal_sign',
+        params: [message, accounts[0]],
+      });
+      
+      return signature;
+    } catch (error) {
+      console.error('Error signing message:', error);
+      throw error;
+    }
   }
 };
 

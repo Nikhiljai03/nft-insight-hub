@@ -23,12 +23,63 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     const storedWallet = localStorage.getItem('wallet');
     if (storedWallet) {
       try {
-        setWallet(JSON.parse(storedWallet));
+        const walletInfo = JSON.parse(storedWallet);
+        setWallet(walletInfo);
+        
+        // Revalidate connection with provider
+        if (walletInfo.provider === 'metamask' && blockchainUtils.isMetaMaskInstalled()) {
+          (window as any).ethereum.request({ method: 'eth_accounts' })
+            .then((accounts: string[]) => {
+              if (accounts.length === 0 || accounts[0].toLowerCase() !== walletInfo.address.toLowerCase()) {
+                // Wallet no longer connected or changed
+                localStorage.removeItem('wallet');
+                setWallet(null);
+              }
+            })
+            .catch(() => {
+              localStorage.removeItem('wallet');
+              setWallet(null);
+            });
+        }
       } catch (e) {
         localStorage.removeItem('wallet');
       }
     }
   }, []);
+  
+  // Set up event listeners for wallet changes
+  useEffect(() => {
+    if (blockchainUtils.isMetaMaskInstalled()) {
+      // Listen for account changes
+      blockchainUtils.listenForAccountChanges((accounts) => {
+        if (accounts.length === 0) {
+          // User disconnected their wallet
+          setWallet(null);
+          localStorage.removeItem('wallet');
+          toast({
+            title: "Wallet Disconnected",
+            description: "Your wallet has been disconnected.",
+          });
+        } else if (wallet && accounts[0].toLowerCase() !== wallet.address.toLowerCase()) {
+          // User switched accounts, update the wallet info
+          connectWallet('metamask').catch(console.error);
+        }
+      });
+      
+      // Listen for chain changes
+      blockchainUtils.listenForChainChanges((chainId) => {
+        if (wallet && wallet.provider === 'metamask') {
+          // User switched networks, update the wallet info
+          connectWallet('metamask').catch(console.error);
+        }
+      });
+    }
+    
+    // Clean up event listeners
+    return () => {
+      // No explicit cleanup needed as listeners are bound to the ethereum object
+    };
+  }, [wallet]);
   
   const connectWallet = async (provider: string) => {
     try {
@@ -43,12 +94,12 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         title: "Wallet Connected",
         description: `Connected to ${blockchainUtils.formatAddress(walletInfo.address)}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error connecting wallet:", error);
       toast({
         variant: "destructive",
         title: "Connection Failed",
-        description: "Could not connect to wallet. Please try again.",
+        description: error.message || "Could not connect to wallet. Please try again.",
       });
     } finally {
       setConnecting(false);
@@ -67,12 +118,12 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         title: "Wallet Disconnected",
         description: "Your wallet has been disconnected.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error disconnecting wallet:", error);
       toast({
         variant: "destructive",
         title: "Disconnection Failed",
-        description: "Could not disconnect wallet. Please try again.",
+        description: error.message || "Could not disconnect wallet. Please try again.",
       });
     }
   };
