@@ -90,7 +90,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     };
   }, [wallet]);
   
-  const connectWallet = async (provider: string) => {
+  const connectWallet = async (provider: string): Promise<void> => {
     try {
       console.log(`Attempting to connect to ${provider}...`);
       setConnecting(true);
@@ -106,7 +106,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         description: `Connected to ${blockchainUtils.formatAddress(walletInfo.address)}`,
       });
       
-      return walletInfo;
+      // Don't return walletInfo here since the function should return void
     } catch (error: any) {
       console.error("Error connecting wallet:", error);
       toast({
@@ -120,7 +120,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
   
-  const disconnectWallet = async () => {
+  const disconnectWallet = async (): Promise<void> => {
     try {
       await blockchainUtils.disconnectWallet();
       setWallet(null);
