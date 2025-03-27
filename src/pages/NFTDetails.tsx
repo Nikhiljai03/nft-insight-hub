@@ -14,12 +14,14 @@ import NFTSocialFeed from '@/components/nft/NFTSocialFeed';
 import NFTPredictions from '@/components/nft/NFTPredictions';
 import NFTTraitsChart from '@/components/nft/NFTTraitsChart';
 import NFTHistory from '@/components/nft/NFTHistory';
+import NFTMarketInsights from '@/components/nft/NFTMarketInsights';
 import LoadingState from '@/components/nft/LoadingState';
 
 const NFTDetails = () => {
   const { slug, tokenId } = useParams<{ slug: string; tokenId: string }>();
   const [nft, setNft] = useState<NFTItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +40,20 @@ const NFTDetails = () => {
     };
 
     fetchNFT();
+    
+    // Set up auto-refresh for real-time data (every 2 minutes)
+    const interval = setInterval(() => {
+      fetchNFT();
+      console.log('Refreshing NFT data...');
+    }, 120000);
+    
+    setRefreshInterval(interval);
+    
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
   }, [slug, tokenId]);
 
   if (loading) {
@@ -85,11 +101,12 @@ const NFTDetails = () => {
 
         <div className="mt-8">
           <Tabs defaultValue="purchase" className="w-full">
-            <TabsList className="mb-6">
+            <TabsList className="mb-6 flex flex-wrap">
               <TabsTrigger value="purchase">Purchase</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="traits">Traits</TabsTrigger>
               <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="insights">Market Insights</TabsTrigger>
               <TabsTrigger value="predictions">Predictions</TabsTrigger>
               <TabsTrigger value="social">Social</TabsTrigger>
             </TabsList>
@@ -110,8 +127,14 @@ const NFTDetails = () => {
                     <img
                       src={nft.imageUrl}
                       alt={nft.name}
-                      className="w-full h-auto rounded-lg"
+                      className="w-full h-auto rounded-lg shadow-lg"
                     />
+                    <div className="mt-4 p-3 bg-secondary/10 rounded-lg">
+                      <h4 className="font-medium mb-2">Last updated</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date().toLocaleString()} • Data refreshes every 2 minutes
+                      </p>
+                    </div>
                   </div>
                   
                   <div className="w-full md:w-1/2">
@@ -161,6 +184,18 @@ const NFTDetails = () => {
                       <h4 className="font-medium mb-2">Description</h4>
                       <p className="text-sm text-muted-foreground">{nft.description}</p>
                     </div>
+                    
+                    <div className="mt-6 grid grid-cols-2 gap-4">
+                      <div className="bg-secondary/10 p-3 rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">Current Price</p>
+                        <p className="text-lg font-bold">{nft.price} ETH</p>
+                      </div>
+                      
+                      <div className="bg-secondary/10 p-3 rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">USD Value</p>
+                        <p className="text-lg font-bold">${(nft.price * 3500).toLocaleString()}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </GlassCard>
@@ -192,7 +227,6 @@ const NFTDetails = () => {
                   </div>
                   
                   <div>
-                    <h3 className="text-xl font-bold mb-4">Rarity Distribution</h3>
                     <NFTTraitsChart traits={nft.traits || []} />
                   </div>
                 </div>
@@ -201,6 +235,10 @@ const NFTDetails = () => {
             
             <TabsContent value="history">
               <NFTHistory nft={nft} />
+            </TabsContent>
+            
+            <TabsContent value="insights">
+              <NFTMarketInsights nft={nft} />
             </TabsContent>
             
             <TabsContent value="predictions">
