@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
@@ -235,7 +234,7 @@ const CollectionDetails = () => {
               
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
+                  <AreaChart
                     data={priceHistory}
                     margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
                   >
@@ -255,7 +254,7 @@ const CollectionDetails = () => {
                       stroke="#82ca9d" 
                       fill="#82ca9d" 
                     />
-                  </BarChart>
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </GlassCard>
