@@ -10,6 +10,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Tag, Clock, Shield, Award } from 'lucide-react';
 import PurchaseNFT from '@/components/nft/PurchaseNFT';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import NFTSocialFeed from '@/components/nft/NFTSocialFeed';
+import NFTPredictions from '@/components/nft/NFTPredictions';
+import NFTTraitsChart from '@/components/nft/NFTTraitsChart';
+import NFTHistory from '@/components/nft/NFTHistory';
+import LoadingState from '@/components/nft/LoadingState';
 
 const NFTDetails = () => {
   const { slug, tokenId } = useParams<{ slug: string; tokenId: string }>();
@@ -36,22 +41,7 @@ const NFTDetails = () => {
   }, [slug, tokenId]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container max-w-6xl mx-auto px-4 py-24">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-pulse w-full max-w-3xl">
-              <div className="h-8 bg-secondary/30 rounded w-1/3 mb-6"></div>
-              <div className="h-64 bg-secondary/20 rounded mb-6"></div>
-              <div className="h-4 bg-secondary/30 rounded w-1/2 mb-4"></div>
-              <div className="h-4 bg-secondary/30 rounded w-3/4 mb-4"></div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (!nft) {
@@ -99,6 +89,9 @@ const NFTDetails = () => {
               <TabsTrigger value="purchase">Purchase</TabsTrigger>
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="traits">Traits</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="predictions">Predictions</TabsTrigger>
+              <TabsTrigger value="social">Social</TabsTrigger>
             </TabsList>
             
             <TabsContent value="purchase">
@@ -175,26 +168,47 @@ const NFTDetails = () => {
             
             <TabsContent value="traits">
               <GlassCard className="p-6">
-                <h3 className="text-xl font-bold mb-4">Traits & Attributes</h3>
-                
-                {!nft.traits || nft.traits.length === 0 ? (
-                  <p className="text-muted-foreground">No traits available for this NFT.</p>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {nft.traits.map((trait, index) => (
-                      <div key={index} className="bg-secondary/10 rounded-lg p-4">
-                        <p className="text-xs text-muted-foreground uppercase mb-1">{trait.trait_type}</p>
-                        <p className="font-medium">{trait.value}</p>
-                        {trait.rarity !== undefined && (
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Rarity: {(trait.rarity * 100).toFixed(1)}%
-                          </p>
-                        )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-xl font-bold mb-4">Traits & Attributes</h3>
+                    
+                    {!nft.traits || nft.traits.length === 0 ? (
+                      <p className="text-muted-foreground">No traits available for this NFT.</p>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {nft.traits.map((trait, index) => (
+                          <div key={index} className="bg-secondary/10 rounded-lg p-4">
+                            <p className="text-xs text-muted-foreground uppercase mb-1">{trait.trait_type}</p>
+                            <p className="font-medium">{trait.value}</p>
+                            {trait.rarity !== undefined && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Rarity: {(trait.rarity * 100).toFixed(1)}%
+                              </p>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
+                  
+                  <div>
+                    <h3 className="text-xl font-bold mb-4">Rarity Distribution</h3>
+                    <NFTTraitsChart traits={nft.traits || []} />
+                  </div>
+                </div>
               </GlassCard>
+            </TabsContent>
+            
+            <TabsContent value="history">
+              <NFTHistory nft={nft} />
+            </TabsContent>
+            
+            <TabsContent value="predictions">
+              <NFTPredictions nft={nft} />
+            </TabsContent>
+            
+            <TabsContent value="social">
+              <NFTSocialFeed nft={nft} />
             </TabsContent>
           </Tabs>
         </div>
