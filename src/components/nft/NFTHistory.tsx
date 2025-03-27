@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { NFTItem } from '@/services/nftApiService';
 import GlassCard from '@/components/ui/GlassCard';
@@ -24,34 +23,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, Repeat, TrendingUp, RefreshCw } from 'lucide-react';
 
-// Enhanced transaction history generation
 const generateMockTransactionHistory = (nft: NFTItem) => {
   const history = [];
   const startDate = new Date();
   startDate.setMonth(startDate.getMonth() - 6);
   
-  // Start with price slightly lower than current
   let lastPrice = nft.price * 0.7;
   
   for (let i = 0; i < 15; i++) {
     const date = new Date(startDate);
-    date.setDate(date.getDate() + (i * 12)); // More frequent events
+    date.setDate(date.getDate() + (i * 12));
     
-    // Random price fluctuation with more volatility
     const priceChange = (Math.random() * 0.25) - 0.05;
     lastPrice = Math.max(0.01, lastPrice * (1 + priceChange));
     
-    // Generate different event types
     const events = ['Sale', 'Transfer', 'Listing', 'Offer', 'Auction'];
     const randomEvent = i === 14 && nft.lastSale ? 'Last Sale' : 
                        i === 0 ? 'Minted' : 
                        events[Math.floor(Math.random() * events.length)];
     
-    // Add volume data (for sales)
     const volume = randomEvent === 'Sale' || randomEvent === 'Last Sale' ? 
                   Math.round(Math.random() * 4) + 1 : 0;
     
-    // Add market sentiment
     const sentiment = randomEvent === 'Sale' || randomEvent === 'Last Sale' ? 
                      (priceChange > 0 ? 'Bullish' : priceChange < 0 ? 'Bearish' : 'Neutral') : 'Neutral';
     
@@ -66,7 +59,6 @@ const generateMockTransactionHistory = (nft: NFTItem) => {
     });
   }
   
-  // Add last sale if available
   if (nft.lastSale) {
     history.push({
       date: nft.lastSale.date,
@@ -79,7 +71,6 @@ const generateMockTransactionHistory = (nft: NFTItem) => {
     });
   }
   
-  // Sort by date
   return history.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
 
@@ -94,19 +85,15 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
   const [refreshTime, setRefreshTime] = useState(new Date());
   
   useEffect(() => {
-    // Initialize data
     setTransactionHistory(generateMockTransactionHistory(nft));
     
-    // Simulate real-time updates
     const intervalId = setInterval(() => {
       setTransactionHistory(prev => {
-        // Add a new data point
         const lastItem = prev[prev.length - 1];
         const newDate = new Date(new Date(lastItem.date).getTime() + 12 * 24 * 60 * 60 * 1000);
         const priceChange = (Math.random() * 0.18) - 0.05;
         const newPrice = Math.max(0.01, lastItem.price * (1 + priceChange));
         
-        // Random event
         const events = ['Sale', 'Transfer', 'Listing', 'Offer'];
         const randomEvent = events[Math.floor(Math.random() * events.length)];
         
@@ -123,12 +110,11 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
         setRefreshTime(new Date());
         return [...prev, newItem];
       });
-    }, 60000); // Update every minute
+    }, 60000);
     
     return () => clearInterval(intervalId);
   }, [nft]);
   
-  // Filter data based on time range
   const getFilteredData = () => {
     if (!transactionHistory.length) return [];
     
@@ -156,7 +142,6 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
   
   const filteredData = getFilteredData();
   
-  // Calculate market stats
   const calculateStats = () => {
     if (!filteredData.length) return { avgPrice: 0, highPrice: 0, lowPrice: 0, transactions: 0, volume: 0 };
     
@@ -174,7 +159,6 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
   
   const stats = calculateStats();
   
-  // Get sentiment color
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
       case 'Bullish': return 'text-green-500';
@@ -183,7 +167,6 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
     }
   };
   
-  // Get event icon
   const getEventIcon = (event: string) => {
     switch (event) {
       case 'Sale':
@@ -276,7 +259,7 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
           }}
         >
           <ResponsiveContainer width="100%" height="100%">
-            {chartView === 'price' && (
+            {chartView === 'price' ? (
               <AreaChart
                 data={filteredData}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -311,10 +294,8 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
                   fill="url(#colorPrice)" 
                 />
               </AreaChart>
-            )}
-            
-            {chartView === 'volume' && (
-              <BarChart
+            ) : chartView === 'volume' ? (
+              <ComposedChart
                 data={filteredData.filter(item => item.volume > 0)}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
@@ -329,10 +310,8 @@ const NFTHistory: React.FC<NFTHistoryProps> = ({ nft }) => {
                   labelFormatter={(date) => new Date(date).toLocaleDateString()}
                 />
                 <Bar dataKey="volume" fill="#82ca9d" />
-              </BarChart>
-            )}
-            
-            {chartView === 'combined' && (
+              </ComposedChart>
+            ) : (
               <ComposedChart
                 data={filteredData}
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
